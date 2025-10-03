@@ -5,10 +5,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-import os, shutil, time, pickle, random
+import os, shutil, time, pickle, random, math
 
 # own
-from dict_parameters import parameters
+from dic_parameters import parameters
 
 #-------------------------------------------------------------------------------
 # Functions
