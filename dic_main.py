@@ -34,9 +34,21 @@ def dic(dict_user):
             # define sample
             sample = dict_user['M_final'][-1-l_sample-dict_user['d_sample']:-1-l_sample, c_sample:c_sample+dict_user['d_sample']]
             # define search zone
-            search_zone = dict_user['M_initial'][-1-l_sample-dict_user['d_sample']-dict_user['d_zr']:-1-l_sample+dict_user['d_zr'], c_sample-dict_user['d_zr']:c_sample+dict_user['d_sample']+dict_user['d_zr']]
-            # look sample in the search zone
-            u = look_sample_in_search_zone(sample, search_zone)
+            search_zone = dict_user['M_initial'][-1-l_sample-dict_user['d_sample']-dict_user['d_zr']:-1-l_sample+dict_user['d_zr'], c_sample-dict_user['d_zr']:c_sample+dict_user['d_sample']+dict_user['d_zr']]            
+            # plot sample and search zone
+            if l_sample == dict_user['l_zs_min'] and c_sample == dict_user['c_zs_min']:
+                fig, (ax1, ax2) = plt.subplots(1,2,figsize=(16,9))
+                im = ax1.imshow(sample, vmin=np.min(dict_user['M_initial']), vmax=np.max(dict_user['M_initial']))
+                ax1.set_title('sample',fontsize = 30)
+                im = ax2.imshow(search_zone, vmin=np.min(dict_user['M_initial']), vmax=np.max(dict_user['M_initial']))
+                ax2.set_title('search_zone',fontsize = 30)
+                fig.tight_layout()
+                fig.savefig('images/sample_searchZone.png')
+                plt.close(fig)
+                # look sample in the search zone
+                u = look_sample_in_search_zone(sample, search_zone, True)
+            else:
+                u = look_sample_in_search_zone(sample, search_zone, False)
             # adapt u
             u[0] = u[0] - dict_user['d_zr']
             u[1] = u[1] - dict_user['d_zr']
@@ -53,7 +65,7 @@ def dic(dict_user):
 
 #-------------------------------------------------------------------------------
 
-def look_sample_in_search_zone(sample, search_zone):
+def look_sample_in_search_zone(sample, search_zone, debug):
     '''
     Search sample in the search zone.
     '''
@@ -61,16 +73,28 @@ def look_sample_in_search_zone(sample, search_zone):
     u_l = 0
     u_c = 0
     cor_max = 0
+    if debug:
+         M_cor = np.zeros((search_zone.shape[0]-sample.shape[0], search_zone.shape[1]-sample.shape[1]))
     # iterate on lines and column in search_zone
     for l in range(search_zone.shape[0]-sample.shape[0]):
         for c in range(search_zone.shape[1]-sample.shape[1]):
             cor = normxcorr2(sample, search_zone[-1-l-sample.shape[0]: -1-l, c: c+sample.shape[1]])
+            if debug:
+                M_cor[l, c] = cor
             # look for the maximum value
             if cor > cor_max:
                 cor_max = cor
                 # change
                 u_l = l
                 u_c = c
+    # print
+    if debug:
+        fig, (ax1) = plt.subplots(1,1,figsize=(16,9))
+        im = ax1.imshow(M_cor)
+        ax1.set_title('Map of correlation',fontsize = 30)
+        fig.tight_layout()
+        fig.savefig('images/correlation.png')
+        plt.close(fig)
     return [u_l, u_c]
 
 #-------------------------------------------------------------------------------
