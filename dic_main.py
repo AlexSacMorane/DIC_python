@@ -21,7 +21,7 @@ def dic(dict_user):
     # initialization 
     l_sample = dict_user['l_zs_min']
     L_u = []
-    L_lc_sample = []
+    L_lc_sample = []   
     # iterate on lines for sample
     while l_sample < dict_user['l_zs_max']:
         # user
@@ -80,9 +80,9 @@ def normxcorr2(M_sample, M_sz):
     Normalized 2-D cross-correlation.
     '''
     # initialization of sums
-    S_xy = 0
-    S_x2 = 0
-    S_y2 = 0
+    S_xy = 0.
+    S_x2 = 0.
+    S_y2 = 0.
     # iterate on lines and columns
     for l in range(M_sample.shape[0]):
         for c in range(M_sample.shape[1]):
