@@ -86,9 +86,9 @@ def normxcorr2(M_sample, M_sz):
     # iterate on lines and columns
     for l in range(M_sample.shape[0]):
         for c in range(M_sample.shape[1]):
-            S_xy = (M_sample[l,c] - np.mean(M_sample))*(M_sz[l,c] - np.mean(M_sz))
-            S_x2 = (M_sample[l,c] - np.mean(M_sample))**2
-            S_y2 = (M_sz[l,c] - np.mean(M_sz))**2
+            S_xy = S_xy + (M_sample[l,c] - np.mean(M_sample))*(M_sz[l,c] - np.mean(M_sz))
+            S_x2 = S_x2 + (M_sample[l,c] - np.mean(M_sample))**2
+            S_y2 = S_y2 + (M_sz[l,c] - np.mean(M_sz))**2
     # compute correlation
     cor = S_xy/(math.sqrt(S_x2)*math.sqrt(S_y2))
     return cor
