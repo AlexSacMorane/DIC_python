@@ -43,6 +43,7 @@ def pure_shearing(dict_user):
     for i in range(dict_user['domain_size']):
         # compute the strain applied in the line
         strain_i = dict_user['strain']*dict_user['M_final'].shape[0]*i/(dict_user['domain_size']-1)
+
         #for j in range(dict_user['domain_size']):
         # divide the strain into integer number of pixels and residual 
         strain_i_int = int(strain_i)
@@ -52,13 +53,14 @@ def pure_shearing(dict_user):
         if strain_i_int > 0:
             dict_user['M_final'][-i-1, strain_i_int:] = dict_user['M_initial'][-i-1, :-strain_i_int]
             dict_user['M_final'][-i-1, :strain_i_int] = dict_user['M_initial'][-i-1, -strain_i_int:]
+            
         # apply the residual displacement
         line_i = dict_user['M_final'][-i-1, :].copy()
         for j in range(dict_user['domain_size']):
-            if j == dict_user['domain_size']-1:
-                dict_user['M_final'][-i-1, j] = line_i[0]*strain_i_res + line_i[j]*(1-strain_i_res)       
+            if j == 0:
+                dict_user['M_final'][-i-1, j] = line_i[-1]*strain_i_res + line_i[j]*(1-strain_i_res)       
             else : 
-                dict_user['M_final'][-i-1, j] = line_i[j+1]*strain_i_res + line_i[j]*(1-strain_i_res)  
+                dict_user['M_final'][-i-1, j] = line_i[j-1]*strain_i_res + line_i[j]*(1-strain_i_res) 
 
     # plot 
     print_image(dict_user['M_final'], r'Final map', 'images/M_1.png')
