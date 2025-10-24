@@ -123,7 +123,75 @@ def pp(dict_user):
     '''
     Post-process the dic output
     '''
-    pass
+    # init the list 
+    L_x = []
+    L_y = []
+    L_v_x = []
+    L_v_y = []
+
+    # iterate on the data from the dic
+    for i_data in range(len(dict_user['L_u'])):
+        u_i = dict_user['L_u'][i_data]
+        lc_sample_i = dict_user['L_lc_sample'][i_data]
+        # convert data
+        L_x.append(lc_sample_i[1])
+        L_y.append(lc_sample_i[0])
+        L_v_x.append(u_i[0])
+        L_v_y.append(u_i[1])
+
+    # check if you can cheat
+    if dict_user['sollicitation'] == 'shearing' or \
+       dict_user['sollicitation'] == '2_blocks_x' or \
+       dict_user['sollicitation'] == '2_blocks_y' :
+        # you can cheat
+        L_x_pred = []
+        L_y_pred = []
+        L_v_x_pred = []
+        L_v_y_pred = []
+        # predict the solution
+        if dict_user['sollicitation'] == 'shearing':
+            for i in range(dict_user['domain_size']):
+                L_x_pred.append(0)
+                L_y_pred.append(i)
+                L_v_x_pred.append(dict_user['strain']*dict_user['M_final'].shape[0]*i/(dict_user['domain_size']-1))
+                L_v_y_pred.append(0)
+        if dict_user['sollicitation'] == '2_blocks_x':
+            for i in range(dict_user['domain_size']):
+                L_x_pred.append(0)
+                L_y_pred.append(i)
+                if i < dict_user['domain_size']/2:
+                    L_v_x_pred.append(0)
+                else : 
+                    L_v_x_pred.append(dict_user['strain']*dict_user['M_final'].shape[0])
+                L_v_y_pred.append(0)
+        if dict_user['sollicitation'] == '2_blocks_y':
+            for i in range(dict_user['domain_size']):
+                L_x_pred.append(i)
+                L_y_pred.append(0)
+                L_v_x_pred.append(0)
+                if i < dict_user['domain_size']/2:
+                    L_v_y_pred.append(0)
+                else : 
+                    L_v_y_pred.append(-dict_user['strain']*dict_user['M_final'].shape[0])
+
+        # plot
+        fig, (ax1, ax2) = plt.subplots(1,2,figsize=(16,9))
+        ax1.quiver(L_x, L_y, L_v_x, L_v_y)
+        ax1.set_title('dic results', fontsize=25)
+        ax2.quiver(L_x_pred, L_y_pred, L_v_x_pred, L_v_y_pred)
+        ax2.set_title('dic prediction', fontsize=25)
+        fig.tight_layout()
+        fig.savefig('images/dic_results.png')
+        plt.close(fig)
+
+
+    else :
+        # plot
+        fig, (ax1) = plt.subplots(1,1,figsize=(16,9))
+        ax1.quiver(L_x, L_y, L_v_x, L_v_y)
+        fig.tight_layout()
+        fig.savefig('images/dic_results.png')
+        plt.close(fig)
 
 #------------------------------------------------------------------------------
 # load dict
