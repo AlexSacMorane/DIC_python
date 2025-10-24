@@ -36,7 +36,7 @@ def dic(dict_user):
             # define search zone
             search_zone = dict_user['M_initial'][-1-l_sample-dict_user['d_sample']-dict_user['d_zr']:-1-l_sample+dict_user['d_zr'], c_sample-dict_user['d_zr']:c_sample+dict_user['d_sample']+dict_user['d_zr']]            
             # plot sample and search zone
-            if l_sample == dict_user['l_zs_min'] and c_sample == dict_user['c_zs_min']:
+            if l_sample == 66 and c_sample == 50:
                 fig, (ax1, ax2) = plt.subplots(1,2,figsize=(16,9))
                 im = ax1.imshow(sample, vmin=np.min(dict_user['M_initial']), vmax=np.max(dict_user['M_initial']))
                 ax1.set_title('sample',fontsize = 30)
