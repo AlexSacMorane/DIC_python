@@ -50,8 +50,8 @@ def dic(dict_user):
             else:
                 u = look_sample_in_search_zone(sample, search_zone, False)
             # adapt u
-            u[0] = u[0] - dict_user['d_zr']
-            u[1] = u[1] - dict_user['d_zr']
+            u[0] = -(u[0] - dict_user['d_zr'])
+            u[1] =  (u[1] - dict_user['d_zr'])
             # save 
             L_u.append(u)
             L_lc_sample.append([l_sample, c_sample])
@@ -78,7 +78,7 @@ def look_sample_in_search_zone(sample, search_zone, debug):
     # iterate on lines and column in search_zone
     for l in range(search_zone.shape[0]-sample.shape[0]):
         for c in range(search_zone.shape[1]-sample.shape[1]):
-            cor = normxcorr2(sample, search_zone[-1-l-sample.shape[0]: -1-l, c: c+sample.shape[1]])
+            cor = normxcorr2(sample, search_zone[l: l+sample.shape[0], c: c+sample.shape[1]])
             if debug:
                 M_cor[l, c] = cor
             # look for the maximum value
@@ -95,7 +95,7 @@ def look_sample_in_search_zone(sample, search_zone, debug):
         fig.tight_layout()
         fig.savefig('images/correlation.png')
         plt.close(fig)
-    return [u_l, u_c]
+    return [u_c, u_l]
 
 #-------------------------------------------------------------------------------
 
@@ -149,4 +149,5 @@ dic(dict_user)
 #------------------------------------------------------------------------------
 
 pp(dict_user)
+
 
