@@ -67,7 +67,7 @@ def pure_shearing(dict_user):
 
 #-------------------------------------------------------------------------------
 
-def blocks_shearing(dict_user):
+def blocks_shearing_x(dict_user):
     '''
     Apply a 2 blocks shearing to an image.
     '''
@@ -102,14 +102,40 @@ def blocks_shearing(dict_user):
     print_image(dict_user['M_final'], r'Final map', 'images/M_1.png')
 
 #-------------------------------------------------------------------------------
+
+def blocks_shearing_y(dict_user):
+    '''
+    Apply a 2 blocks shearing to an image.
+    '''
+    # apply random spekkle pattern
+    for i in range(dict_user['domain_size']):
+        # compute the strain applied in the line
+        if i < dict_user['domain_size']/2:
+            strain_i = 0
+        else : 
+            strain_i = 5
+
+        #for j in range(dict_user['domain_size']):
+        # divide the strain into integer number of pixels and residual 
+        strain_i_int = int(strain_i)
+
+        # apply the integer offset
+        if strain_i_int > 0:
+            dict_user['M_final'][strain_i_int:, i] = dict_user['M_initial'][:-strain_i_int, i]
+            dict_user['M_final'][:strain_i_int, i] = dict_user['M_initial'][-strain_i_int:, i]
+            
+    # plot 
+    print_image(dict_user['M_final'], r'Final map', 'images/M_1.png')
+
+#-------------------------------------------------------------------------------
 # Parameter
 #-------------------------------------------------------------------------------
 
 # domain 
 domain_size = 100 # same in 2 directions
 
-# available: shearing, 2_blocks
-sollicitation = '2_blocks'
+# available: shearing, 2_blocks_x, 2_blocks_y
+sollicitation = '2_blocks_y'
 
 # depending on the sollicitation, the strain applied
 strain = 0.05 # -
@@ -142,6 +168,8 @@ for i in range(dict_user['domain_size']):
     for j in range(dict_user['domain_size']):
         dict_user['M_initial'][i, j] = random.random()
         #dict_user['M_initial'][i, j] = j/(dict_user['domain_size']-1)
+        #dict_user['M_initial'][i, j] = i/(dict_user['domain_size']-1)
+
 
 # plot
 print_image(dict_user['M_initial'], r'Initial map', 'images/M_0.png')
@@ -156,8 +184,10 @@ dict_user['M_final'] = dict_user['M_initial'].copy()
 # selection of the deformation applied
 if dict_user['sollicitation'] == 'shearing':
     pure_shearing(dict_user)
-if dict_user['sollicitation'] == '2_blocks':
-    blocks_shearing(dict_user)
+if dict_user['sollicitation'] == '2_blocks_x':
+    blocks_shearing_x(dict_user)
+if dict_user['sollicitation'] == '2_blocks_y':
+    blocks_shearing_y(dict_user)
 
 #-------------------------------------------------------------------------------
 # save dict
